@@ -5,7 +5,6 @@
 //  Created by Jeremy Shaw on 10/2/19.
 //  Copyright © 2019 Dan. All rights reserved.
 //
-
 import UIKit
 
 class HomeTableViewController: UITableViewController {
@@ -16,14 +15,16 @@ class HomeTableViewController: UITableViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        loadTweet()
+        //loadTweet()
         // Uncomment the following line to preserve selection between presentations
         // self.clearsSelectionOnViewWillAppear = false
-
         // Uncomment the following line to display an Edit button in the navigation bar for this view controller.
         // self.navigationItem.rightBarButtonItem = self.editButtonItem
     }
-    
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        loadTweet()
+    }
     func loadTweet() {
         let myUrl = "https://api.twitter.com/1.1/statuses/home_timeline.json"
         let myParams = ["count": 10]
@@ -45,7 +46,6 @@ class HomeTableViewController: UITableViewController {
         UserDefaults.standard.set(false, forKey: "userLoggedIn")
     }
     // MARK: - Table view data source
-
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "tweetCell", for: indexPath) as! TweetCellTableViewCell
@@ -60,7 +60,9 @@ class HomeTableViewController: UITableViewController {
         if let imageData = data {
             cell.profileImage.image = UIImage.init(data: imageData)
         }
-        
+        cell.setFavorite(tweetArray[indexPath.row]["favorited"] as! Bool)
+        cell.tweetId = tweetArray[indexPath.row]["id"] as! Int
+        cell.setRetweeted(tweetArray[indexPath.row]["retweeted"] as! Bool)
         return cell
     }
     
@@ -79,9 +81,7 @@ class HomeTableViewController: UITableViewController {
     /*
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "reuseIdentifier", for: indexPath)
-
         // Configure the cell...
-
         return cell
     }
     */
@@ -102,14 +102,13 @@ class HomeTableViewController: UITableViewController {
             tableView.deleteRows(at: [indexPath], with: .fade)
         } else if editingStyle == .insert {
             // Create a new instance of the appropriate class, insert it into the array, and add a new row to the table view
-        }    
+        }
     }
     */
 
     /*
     // Override to support rearranging the table view.
     override func tableView(_ tableView: UITableView, moveRowAt fromIndexPath: IndexPath, to: IndexPath) {
-
     }
     */
 
@@ -123,7 +122,6 @@ class HomeTableViewController: UITableViewController {
 
     /*
     // MARK: - Navigation
-
     // In a storyboard-based application, you will often want to do a little preparation before navigation
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         // Get the new view controller using segue.destination.
